@@ -3,6 +3,10 @@ package com.smartdroidesign.androidchat.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -21,6 +25,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -75,7 +80,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private FirebaseAuth mAuth;
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -111,7 +115,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
 
-
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -120,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mRegisteringButton = (Button)findViewById(R.id.email_registration_button);
+        Button mRegisteringButton = (Button) findViewById(R.id.email_registration_button);
         mRegisteringButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,7 +228,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
 
 
-
             if (isResgistering) {
                 mAuth.createUserWithEmailAndPassword(email, password)
 
@@ -237,6 +239,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "createUserWithEmail:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
+                                    UsernameDialogFragment dialog = new UsernameDialogFragment();
+                                    dialog.show(getFragmentManager(), null);
                                     updateUI(user);
                                 } else {
                                     // If sign in fails, display a message to the user.
@@ -246,7 +250,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                     updateUI(null);
                                 }
 
-                                // ...
                             }
                         });
 
@@ -376,6 +379,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+
+    }
+
+    public static class UsernameDialogFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            // Get the layout inflater
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView(inflater.inflate(R.layout.username_dialog, null))
+                    // Add action buttons
+                    .setPositiveButton(R.string.action_register, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+
+            return builder.create();
+        }
+
     }
 
 
