@@ -41,7 +41,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.smartdroidesign.androidchat.R;
+import com.smartdroidesign.androidchat.activities.com.examples.smartdroidesign.android.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -398,8 +400,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
 
-                            EditText usernameField = ((android.support.v7.app.AlertDialog) dialog).findViewById(R.id.username_field);
+                            // https://android-chat-11e2d.firebaseio.com/android-chat-11e2d:/users/96VKytWkY6eezrgxPQg9mdF4lEY2/profile/username
+
+                            EditText usernameField = ((AlertDialog) dialog).findViewById(R.id.username_field);
                             String username = usernameField.getText().toString();
+                            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                            User aUser = new User(username, "Empty", "Empty");
+
+                            FirebaseDatabase.getInstance().getReference("users").child(userId).child("profile").child("username").setValue(aUser);
+
+                            Intent intent = new Intent(getActivity().getBaseContext(), ChatActivity.class);
+                            startActivity(intent);
 
                         }
                     });
